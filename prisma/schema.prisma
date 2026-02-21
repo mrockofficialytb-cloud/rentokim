@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Car {
+  id         String    @id @default(uuid())
+  brand      String
+  model      String
+  variant    String?    // např. "Combi"
+  year       Int?
+  seats      Int?
+  transmission String?
+  fuel       String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  units      CarUnit[]
+}
+
+model CarUnit {
+  id         String   @id @default(uuid())
+  carId      String
+  vin        String?  @unique
+  plate      String?  
+  mileage    Int?
+  color      String?
+  status     String   @default("available") // available/service/damaged/blocked
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  car        Car      @relation(fields: [carId], references: [id])
+  reservations Reservation[]
+  blocks       Block[]
+}
+
+model Reservation {
+  id           String   @id @default(uuid())
+  carUnitId    String
+  from         DateTime
+  to           DateTime
+  customerId   String?
+  priceTotal   Float?
+  deposit      Float?
+  status       String   @default("pending") // pending/confirmed/picked/returned/cancelled
+  source       String?  // web/admin/manual
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  carUnit      CarUnit  @relation(fields: [carUnitId], references: [id])
+  customer     Customer? @relation(fields: [customerId], references: [id])
+}
+
+model Block {
+  id         String   @id @default(uuid())
+  carUnitId  String
+  from       DateTime
+  to         DateTime
+  reason     String?  // service/repair/transfer/private
+  createdAt  DateTime @default(now())
+
+  carUnit    CarUnit  @relation(fields: [carUnitId], references: [id])
+}
+
+model Customer {
+  id            String   @id @default(uuid())
+  name          String
+  phone         String?
+  email         String  @unique
+  drivingLicense String?
+  note          String?
+  blacklist     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  reservations  Reservation[]
+}
