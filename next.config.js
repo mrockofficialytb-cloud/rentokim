@@ -1,8 +1,11 @@
-/** @type {import("next").NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
-  experimental: { serverActions: { allowedOrigins: ['*'] } },
+  experimental: {
+    turbo: {
+      resolveAlias: {}
+    }
+  },
+  output: 'standalone'
 };
 
 module.exports = nextConfig;
