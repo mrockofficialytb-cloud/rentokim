@@ -1,17 +1,14 @@
 cd E:\RENT\autopujcovna
 
 @'
-/**
- * next.config.js
- * Temporary: ignore TypeScript/ESLint build errors so Vercel can deploy quickly.
- * After deploy, we will fix types properly (install @types/nodemailer or add declaration).
- */
 module.exports = {
   typescript: {
+    // dočasně ignorovat chyby TypeScript při buildu (temporary)
     ignoreBuildErrors: true
   },
   eslint: {
+    // dočasně ignorovat ESLint chyby při buildu (temporary)
     ignoreDuringBuilds: true
   }
 };
-'@ | Out-File -Encoding utf8 next.config.js
+'@ | Out-File -Encoding ASCII next.config.js
